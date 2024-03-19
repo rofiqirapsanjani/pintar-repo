@@ -1,23 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-ak-deployment
+  name: my-ak-deployment # Specifies the name of the Deployment
 spec:
-  replicas: 2
+  replicas: 2 # Sets the desired number of pod replicas to be maintained by the Deployment
   selector:
     matchLabels:
       app: angular-app
   template:
     metadata:
       labels:
-        app: angular-app
+        app: angular-app # Labels to be applied to the Pods created by this Deployment
     spec:
+      serviceAccountName: iam-test # Specifies the IAM service account to be used by the Pods, this name is just an example, replace the sa name with name created by aws
       containers:
-      - name: my-angular-app
-        image: akdevopscoaching/mywebapp:latest
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8085
+        - name: my-angular-app # Name of the container within the Pod
+          image: mywebapp:v1 #  the Docker image to be used for the container
+          imagePullPolicy: Always #  the image pull policy for the container (always pull)
+          ports:
+            - containerPort: 8085 #  the port to expose on the container
+
 # service type loadbalancer
 ---
 apiVersion: v1
@@ -28,7 +30,7 @@ spec:
   selector:
     app: angular-app
   ports:
-    - protocol: TCP
-      port: 8085
-      targetPort: 8085
-  type: LoadBalancer
+    - protocol: TCP # Specifies the protocol used for the port (TCP)
+      port: 8085 # Specifies the port on which the Service will be exposed
+      targetPort: 8085 #container pord
+  type: LoadBalancer #type of service will create
